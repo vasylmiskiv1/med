@@ -6,15 +6,15 @@
       </div>
       <div class="profile__rating">
         <star-rating
-          :max-rating ="3"
+          :max-rating ="getDocAverageRating"
           :star-size = "33"
-          :rating = "3"
+          :rating = "getDocAverageRating"
           :show-rating = "false"
           :read-only = "true"
         />
       </div>
       <div class="rating__info">
-        (Середня оцінка: 3)
+        (Середня оцінка: {{getDocAverageRating}})
       </div>
     </div>
 
@@ -64,8 +64,30 @@
   import StarRating from 'vue-star-rating'
   export default {
     name: 'DocProfile',
+    props: {
+      reviews: Array,
+    },
      components: {
       StarRating
+    },
+    data() {
+      return {
+        docAverageRating: 0,
+      }
+    },
+    // mounted
+    computed: {
+      getDocAverageRating() {
+        return this.docAverageRating
+      }
+    },
+    // real time
+    created() {
+      let ratingAmount = 0
+      const reviewsLength = this.reviews.length
+      this.reviews.forEach(review => ratingAmount += review.rating)
+      const averageRating = Math.round(ratingAmount / reviewsLength)
+      this.docAverageRating = averageRating
     }
   }
  
