@@ -13,7 +13,7 @@
       Залишити оцінку та відгук
     </div>
 
-    <form class="form review__form" @submit.prevent="onSubmit">
+    <form class="form review__form" @submit="(e) => onSubmit(e)">
 
 <!-- intro -->
       <div class="form__intro">
@@ -123,10 +123,10 @@ export default {
     // setup for clear button
     isFormChanged () {
       return (
-        this.userData.name != false ||
-        this.userData.rating != false ||
-        this.userData.description != false ||
-        this.userData.isUserAnon != false
+        this.userData.name ||
+        this.userData.rating ||
+        this.userData.description ||
+        this.userData.isUserAnon
       )
     }
   },
@@ -157,7 +157,9 @@ export default {
     },
 
     // form sumbit
-    onSubmit () {
+    onSubmit (e) {
+      e.preventDefault();
+      
       // clear inputs(optional)
       // const resetAllInputs = () => {
         
@@ -178,10 +180,12 @@ export default {
       
       // if ok send data
       if(isFormReady()) {
-        // send data
         console.log(this.userData)
-        // close the form
+         // close the form
         this.isOpenForm = false
+        // send data
+        this.$emit('create-review', this.userData)
+       
       } else {
         // open modal alert
         this.isModalAlert = true
