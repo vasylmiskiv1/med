@@ -11,7 +11,7 @@
 <script>
 import Header from './components/Header.vue'
 import DocProfile from './components/DocProfile.vue'
-import Feedback from './components/Feedback.vue'
+import Feedback from './components/CreateReview.vue'
 export default {
   name: 'app',
   components: {

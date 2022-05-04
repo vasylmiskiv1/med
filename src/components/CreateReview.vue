@@ -7,13 +7,13 @@
       Ок
     </button>
   </div>
-  <div class="feebdack">
+  <div v-if="isOpenForm" class="review">
     
-    <div class="feedback__title">
+    <div class="review__title">
       Залишити оцінку та відгук
     </div>
 
-    <form class="form feedback__form" @submit.prevent="onSubmit">
+    <form class="form review__form" @submit.prevent="onSubmit">
 
 <!-- intro -->
       <div class="form__intro">
@@ -24,15 +24,14 @@
           name="intro" 
           id="intro"
           placeholder="Вкажіть ваше призвіще та ім'я"
-          @change="onChange($event)"
           v-model="userData.name"
-          :disabled="userData.isAnon"
+          :disabled="userData.isUserAnon"
         >
        <input
           class="intro__checkbox"
           type="checkbox"
           id="checkbox" 
-          v-model="userData.isAnon"
+          v-model="userData.isUserAnon"
           @change="isCheckboxTrue"
         >
       </div>
@@ -69,26 +68,25 @@
       </div>
 
 <!-- review -->
-      <div class="form__review">
-        <div class="review__title">
-          <label for="review">Напишіть відгук:</label>
+      <div class="form__description description">
+        <div class="description__title">
+          <label for="description">Напишіть відгук:</label>
         </div>
         <div>
           <textarea 
-            class="review__textarea"
-            id="review" 
-            name="review"
+            class="description__textarea"
+            id="description" 
+            name="description"
             maxlength="500"
             rows="5"
-            v-model="this.userData.feedback"
+            v-model="this.userData.description"
             placeholder="Вкажіть відгук до 500 символів..."
-            @change="(e) => onChangeFeedback(e)"
           ></textarea> 
         </div>
       </div>
 
       <div class="form__buttons">
-        <button class="button button__clear" type="button" @click="handleClearInputs">
+        <button class="button button__clear" type="button" @click="handleClearInputs" :disabled="!isFormChanged">
           Очистити
         </button>
          <button type="submit" class="button button__submit">
@@ -101,6 +99,7 @@
 
 <script>
 import StarRating from 'vue-star-rating'
+import { v4 as uuidv4 } from 'uuid'
 export default {
   name: 'Feedback',
   components: {
@@ -108,62 +107,84 @@ export default {
   },
   data() {
     return {
-      initialUserData: {
-      name: '',
-      isAnon: false,
-      rating: 0,
-      feedback: ''
+      // define initial userData
+      userData: {
+        id: uuidv4(),
+        name: '',
+        rating: 0,
+        description: '',
+        isUserAnon: false,
       },
-      userData: {...this.initialUserData},
       isModalAlert: false,
-      isClearDisabled: false,
+      isOpenForm: true,
+    }
+  },
+  computed: {
+    // setup for clear button
+    isFormChanged () {
+      return (
+        this.userData.name != false ||
+        this.userData.rating != false ||
+        this.userData.description != false ||
+        this.userData.isUserAnon != false
+      )
     }
   },
   methods: {
     // clear the input when turns on anon checkbox
     isCheckboxTrue () {
-      if(this.userData.isAnon) {
-        this.userData.name = 'Anonymous'
-      }
+        this.userData.name = ''
     },
 
-    onChangeName (e) {
-      this.userData.name = e.target.value
-    },
-
+    // change stars value
      onChangeRating () {
       const stars = document.getElementById('rate__stars')
       const starsValue = window.getComputedStyle(stars).getPropertyValue('--value')
       this.userData.rating = starsValue
     },
 
-    onChangeFeedback (e) {
-      this.userData.feedback = e.target.value
-    },
-
+    // clear inputs
     handleClearInputs () {
       // reset stars amount
       document.getElementById('rate__stars').setAttribute('style', '--value: 0')
-      // clear all user's values
-      this.userData = {...this.initialUserData}
-      console.log(this.userData)
+      // reset user's inputs(?)
+      this.userData = {
+        name: '',
+        rating: 0,
+        description: '',
+        isUserAnon: false,
+      }
     },
 
     // form sumbit
     onSubmit () {
-      // important inputs check
-      if(this.userData.isAnon) {
-        if(this.userData.rating > 0) {
-          console.log(this.userData)
-        } else {
-          this.isModalAlert = true
+      // clear inputs(optional)
+      // const resetAllInputs = () => {
+        
+      //   // reset isUserAnon
+      //   this.userData.isUserAnon = false
+      //   // get empty user
+      //   this.userData = this.initialUserData
+      // }
+
+      // check form is ready or not
+      const isFormReady = () => {
+        // set anonymous to user's name input if checkbox is on
+        if(this.userData.isUserAnon) {
+          this.userData.name = 'Anonymous'
         }
+        return this.userData.name && this.userData.rating ? true : false
+      }
+      
+      // if ok send data
+      if(isFormReady()) {
+        // send data
+        console.log(this.userData)
+        // close the form
+        this.isOpenForm = false
       } else {
-        if(this.userData.name.length && this.userData.rating > 0) {
-          console.log(this.userData)
-        } else {
-          this.isModalAlert = true
-        }
+        // open modal alert
+        this.isModalAlert = true
       }
     }
   }
@@ -171,12 +192,12 @@ export default {
 </script>
 
 <style>
-
 /* { * } */
   .asterisk {
     color: red;
   }
 
+/* modal window */
   .modal__alert {
     background-color: rgba(255, 255, 255, 0.801);
     border: 2px solid #3e758f;
@@ -211,9 +232,11 @@ export default {
 
   .modal__alert-button:hover {
     background-color: #1c90ad;
+    color: #fff;
   }
 
-  .feebdack {
+  /* review form */
+  .review {
     padding: 20px 18px 20px 50px;
     background: #c0c0c0;
     position: absolute;
@@ -226,7 +249,7 @@ export default {
   }
 
 /* article */
-  .feedback__title {
+  .review__title {
     text-align: center;
     font-size: 25px;
     text-transform: uppercase;
@@ -270,7 +293,7 @@ export default {
     font-weight: bold;
   }
 
-/* feedback rating */
+/* review rating */
    .form__rate {
     display: flex;
     justify-content: start;
@@ -325,19 +348,19 @@ export default {
     margin-left: 15px;
   }
  
-  /* feedback review */
-  .form__review {
+  /* veview description */
+  .form__description {
     margin-top: 30px;
     display: flex;
     gap: 63px;
   }
 
-  .review__title {
+  .description__title {
     font-size: 18px;
     flex-grow: 0;
   }
 
-  .review__textarea {
+  .description__textarea {
     background: transparent;
     resize: none;
     width: 570px;
@@ -347,7 +370,7 @@ export default {
     outline: none;
   }
 
-  .review__textarea::placeholder {
+  .description__textarea::placeholder {
     font-style: italic;
   }
 
@@ -371,8 +394,9 @@ export default {
     background-color: #FFF2CC;
   }
 
-  .button__clear:hover {
-    background-color: #fadf8e;
+
+  .button__clear:disabled {
+    background-color: #e4e1e1;
   }
   
   .button__submit {
@@ -380,7 +404,7 @@ export default {
   }
 
   .button__submit:hover {
-    background-color: #66dce2;
+    background-color: #87d9dd;
   }
 
 </style>
