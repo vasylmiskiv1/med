@@ -95,21 +95,27 @@
       </div>
     </form>
   </div>
+  <div v-if="successStatus">
+    <ModalSuccess />
+  </div>
 </template>
 
 <script>
-import StarRating from 'vue-star-rating'
-import { v4 as uuidv4 } from 'uuid'
+import { v4 as uuidv4 } from 'uuid';
+// modal success
+import ModalSuccess from '../modals/ModalSuccess.vue'
 export default {
-  name: 'Feedback',
+  name: 'addReview',
+  props: {
+    successStatus: Boolean
+  },
   components: {
-      StarRating
+    ModalSuccess
   },
   data() {
     return {
-      // define initial userData
+      // define review
       userData: {
-        id: uuidv4(),
         name: '',
         rating: 0,
         description: '',
@@ -117,7 +123,11 @@ export default {
       },
       isModalAlert: false,
       isOpenForm: true,
+      isOpenSuccessModal: false,
     }
+  },
+  created () {
+    console.log(this.successStatus)
   },
   computed: {
     // setup for clear button
@@ -140,7 +150,7 @@ export default {
      onChangeRating () {
       const stars = document.getElementById('rate__stars')
       const starsValue = window.getComputedStyle(stars).getPropertyValue('--value')
-      this.userData.rating = starsValue
+      this.userData.rating = Number(starsValue)
     },
 
     // clear inputs
@@ -158,16 +168,7 @@ export default {
 
     // form sumbit
     onSubmit (e) {
-      e.preventDefault();
-      
-      // clear inputs(optional)
-      // const resetAllInputs = () => {
-        
-      //   // reset isUserAnon
-      //   this.userData.isUserAnon = false
-      //   // get empty user
-      //   this.userData = this.initialUserData
-      // }
+      e.preventDefault()
 
       // check form is ready or not
       const isFormReady = () => {
@@ -180,12 +181,40 @@ export default {
       
       // if ok send data
       if(isFormReady()) {
-        console.log(this.userData)
-         // close the form
-        this.isOpenForm = false
+        // define current date
+        var today = new Date();
+        var date = today.getFullYear()+'/'+(today.getMonth()+1)+'/'+today.getDate();
+        var time = today.getHours() + ":" + today.getMinutes();
+        // set date and id to new review
+        const newReview = {
+          id: uuidv4(),
+          ...this.userData,
+          date: `${date} ${time}`,
+        }
         // send data
-        this.$emit('create-review', this.userData)
-       
+        this.$emit('add-review', newReview)
+
+         // reset stars amount
+        document.getElementById('rate__stars').setAttribute('style', '--value: 0')
+
+        // reset review inputs(optional)
+        this.userData.name = '',
+        this.userData.rating = 0,
+        this.userData.description = '',
+        this.userData.isUserAnon = false
+
+        // close the form (optional)
+          this.isOpenForm = false
+          this.isOpenSuccessModal = true
+
+        //temporary hide the form and show successful modal window(rewrite)
+        setTimeout(() => {
+          this.isOpenForm = true
+          setTimeout(() => {
+            this.isOpenSuccessModal = false
+          },1000)
+        }, 3000)
+        
       } else {
         // open modal alert
         this.isModalAlert = true

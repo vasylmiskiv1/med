@@ -1,0 +1,60 @@
+{
+  "reviews": [
+    {
+      "id": "ec3f29c2-3106-4c47-92a0-3a8428ddb0eb",
+      "name": "Дмитро",
+      "rating": 3,
+      "description": "123",
+      "isUserAnon": false,
+      "date": "5/5/2022 12:00"
+    },
+    {
+      "id": "3fb2a48c-1ab1-4077-bbcb-cbbdf40618d8",
+      "name": "Anonymous",
+      "rating": 4,
+      "description": "asdfasdfasdf",
+      "isUserAnon": true,
+      "date": "5/5/2022 13:18"
+    },
+    {
+      "id": "a7d6cf33-94bc-4989-8b92-54636a298af4",
+      "name": "asdf",
+      "rating": 4,
+      "description": "asdfasdf",
+      "isUserAnon": false,
+      "date": "2022/5/5 17:14"
+    },
+    {
+      "id": "83e24ac3-33c9-47ab-ac19-cdd9612bda4d",
+      "name": "Михайло",
+      "rating": 5,
+      "description": "Добре",
+      "isUserAnon": false,
+      "date": "2022/5/5 17:15"
+    },
+    {
+      "id": "e20a600d-498d-4557-9b73-d58d1b075e96",
+      "name": "Анна",
+      "rating": 5,
+      "description": "Добре",
+      "isUserAnon": false,
+      "date": "2022/5/5 17:15"
+    },
+    {
+      "id": "7a01b011-88aa-42b9-b691-0abf5c1fe9f6",
+      "name": "Anonymous",
+      "rating": 4,
+      "description": "",
+      "isUserAnon": true,
+      "date": "2022/5/5 17:16"
+    },
+    {
+      "id": "d7ecdede-c4f1-47dd-93ce-a0d469b1d32d",
+      "name": "Anonymous",
+      "rating": 4,
+      "description": "asdfasdfasdf",
+      "isUserAnon": true,
+      "date": "2022/5/5 17:34"
+    }
+  ]
+}

@@ -3,6 +3,9 @@
     <div class="review__name">
       {{review.name}}
     </div>
+    <div class="review__date">
+      {{review.date}}
+    </div>
     <div class="review__rating">
       <star-rating
         :max-rating ="5"

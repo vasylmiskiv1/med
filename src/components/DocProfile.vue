@@ -6,15 +6,15 @@
       </div>
       <div class="profile__rating">
         <star-rating
-          :max-rating ="getDocAverageRating"
+          :max-rating ="docAverageRating"
           :star-size = "33"
-          :rating = "getDocAverageRating"
+          :rating = "docAverageRating"
           :show-rating = "false"
           :read-only = "true"
         />
       </div>
       <div class="rating__info">
-        (Середня оцінка: {{getDocAverageRating}})
+        (Середня оцінка: {{docAverageRating}})
       </div>
     </div>
 
@@ -22,9 +22,8 @@
       <div class="profile__photo">
         <img 
           class="profile__img"
-          src="../assets/profile.jpg" 
+          src="../assets/profile.png" 
           alt="profile-photo"
-
         >
       </div>
       <div class="profile__description">
@@ -72,24 +71,24 @@
     },
     data() {
       return {
-        docAverageRating: 0,
+        docAverageRating: 0
       }
     },
-    // mounted
+    //if state is changing so change dom
     computed: {
       getDocAverageRating() {
         return this.docAverageRating
       }
     },
-    // real time
-    created() {
-      let ratingAmount = 0
-      const reviewsLength = this.reviews.length
-      this.reviews.forEach(review => ratingAmount += review.rating)
-      const averageRating = Math.round(ratingAmount / reviewsLength)
-      this.docAverageRating = averageRating
-    }
-  }
+    
+   created () {
+      //  get doc average rating
+     let ratingAmount = 0;
+     let reviewsAmount = this.reviews.length
+     this.reviews.forEach((review) => ratingAmount += review.rating)
+     this.docAverageRating = Math.round(ratingAmount / reviewsAmount)
+   }
+}
  
 </script>
 
